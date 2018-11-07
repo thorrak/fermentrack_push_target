@@ -1,0 +1,54 @@
+{% extends "sitewide/template.html" %}
+{% load static %}
+
+
+{% block title %}Fermentrack Push Target Test{% endblock %}
+
+{% block content %}
+
+    <h4>Upstream Fermentrack Installations</h4>
+
+    {% for fermentrack_installation in fermentrack_installations %}
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">{{ fermentrack_installation.name }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Last Checked In: {{ fermentrack_installation.last_checked_in }}</h6>
+            </div>
+
+            <ul class="list-group list-group-flush">
+            {% for brewpi_device in fermentrack_installation.brewpidevice_set.all %}
+                <!-- BrewPiDevice Line -->
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-8"><i class="fas fa-thermometer-half"></i> BrewPiDevice {{ brewpi_device.name }}</div>
+                        <div class="col-sm-4 col-md-1">{{ brewpi_device.latest_fridge_temp }}&deg; {{ brewpi_device.latest_temp_format }}</div>
+                        <div class="col-sm-4 col-md-1">{{ brewpi_device.latest_gravity }}</div>
+                        <div class="col-sm-4 col-md-2">CSV | Json</div>
+                    </div>
+                </li>
+                <!-- End BrewPiDevice Line -->
+            {% endfor %}
+
+            {% for gravity_sensor in fermentrack_installation.gravitysensor_set.all %}
+                <!-- GravitySensor Line -->
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-8"><i class="fas fa-wine-glass-alt"></i> GravitySensor {{ gravity_sensor.name }}</div>
+                        <div class="col-sm-4 col-md-1">{{ gravity_sensor.latest_temp }}&deg; {{ gravity_sensor.latest_temp_format }}</div>
+                        <div class="col-sm-4 col-md-1">{{ gravity_sensor.latest_gravity }}</div>
+                        <div class="col-sm-4 col-md-2">CSV | Json</div>
+                    </div>
+                </li>
+                <!-- End GravitySensor Line -->
+            {% endfor %}
+
+            </ul>
+
+        </div>
+
+    {% endfor %}
+
+
+
+
+{% endblock %}

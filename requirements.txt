@@ -1,0 +1,5 @@
+# This script implements minimal functionality, and has minimal requirements as a result. In a pinch, this can use the
+# same environment as a Fermentrack installation.
+
+Django>=1.11,<1.12
+pytz

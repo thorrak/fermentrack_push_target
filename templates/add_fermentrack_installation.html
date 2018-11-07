@@ -1,0 +1,39 @@
+{% extends "sitewide/template.html" %}
+{% load static %}
+
+
+{% block title %}Add Upstream Fermentrack Installation{% endblock %}
+
+
+
+{% block content %}
+
+    <form action="{% url "add_fermentrack_install" %}" class="form-horizontal" method="post">{% csrf_token %}
+
+        <h3 class="form-header">Add Upstream Fermentrack Installation</h3>
+
+        <div class="form-group">
+             {% if form.name.errors %}
+                <div class="alert alert-danger"><strong>{{ form.name.label }}</strong> {% for error in form.name.errors %}{{ error }}{% endfor %}</div>
+             {% endif %}
+            <label for="{{ form.name.id }}" data-toggle="tooltip" title="{{ form.name.help_text }}" class="col-sm-2 control-label">
+                {{ form.name.label_tag }}
+            </label>
+            <div class="col-sm-10">{% if replace_with_hidden %}{{ form.name.value }}<input type="hidden" name="{{ form.name.name }}" value="{{ form.name.value }}">{% else %}{{ form.name }}{% endif %}</div>
+        </div>
+
+
+        <div class="form-group">
+             {% if form.api_key.errors %}
+                <div class="alert alert-danger"><strong>{{ form.api_key.label }}</strong> {% for error in form.api_key.errors %}{{ error }}{% endfor %}</div>
+             {% endif %}
+            <label for="{{ form.api_key.id }}" data-toggle="tooltip" title="{{ form.api_key.help_text }}" class="col-sm-2 control-label">
+                {{ form.api_key.label_tag }}
+            </label>
+            <div class="col-sm-10">{% if replace_with_hidden %}{{ form.api_key.value }}<input type="hidden" name="{{ form.api_key.name }}" value="{{ form.api_key.value }}">{% else %}{{ form.api_key }}{% endif %}</div>
+        </div>
+
+        <input type="submit" value="Add" class="btn btn-primary"/>
+    </form>
+
+{% endblock %}
