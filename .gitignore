@@ -209,3 +209,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# wsgi/uwsgi
+*.sock
+env/

@@ -18,6 +18,8 @@ This script is licensed under the MIT (Expat) license, the full text of which is
 
 ## Installation & Documentation
 
-This script **does not** include usage/installation documentation. It is intended to be installed similarly to other Django web apps, with a Python environment containing the packages specified in the requirements.txt file within the repo.
+This script **does not** include full usage/installation documentation. It is intended to be installed similarly to other Django web apps, with a Python environment containing the packages specified in the requirements.txt file within the repo.
 
-Full documentation for Fermentrack itself (including complete installation instructions) is available at [https://docs.fermentrack.com/](https://docs.fermentrack.com/).
+Installation documentation is contained within [install/README.md](install/README.md). 
+
+Full documentation for Fermentrack itself is available at [https://docs.fermentrack.com/](https://docs.fermentrack.com/).
