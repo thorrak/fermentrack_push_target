@@ -1,0 +1,1 @@
+This file only exists to cause the directory to be created. Make sure to run collect_static when deploying.
