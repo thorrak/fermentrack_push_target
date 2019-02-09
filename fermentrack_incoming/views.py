@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from . import forms
 
-import json, datetime, pytz, os, logging, pprint
+import json, datetime, pytz, os, logging, pprint, decimal
 
 from fermentrack_incoming.models import UpstreamFermentrackInstallation, BrewPiDevice, GravitySensor
 import fermentrack_push_target.settings as settings
@@ -99,12 +99,12 @@ def process_incoming_data(request):
         # at least the minimum set of fields required be provided.
         brewpi_device.name = getattr(remote_brewpi_info, 'name', "")
         brewpi_device.latest_temp_format = getattr(remote_brewpi_info, 'temp_format', "")
-        brewpi_device.latest_fridge_temp = getattr(remote_brewpi_info, 'fridge_temp', 0)
-        brewpi_device.latest_room_temp = getattr(remote_brewpi_info, 'room_temp', 0)
-        brewpi_device.latest_beer_temp = getattr(remote_brewpi_info, 'beer_temp', 0)
+        brewpi_device.latest_fridge_temp = decimal.Decimal(getattr(remote_brewpi_info, 'fridge_temp', 0.0))
+        brewpi_device.latest_room_temp = decimal.Decimal(getattr(remote_brewpi_info, 'room_temp', 0.0))
+        brewpi_device.latest_beer_temp = decimal.Decimal(getattr(remote_brewpi_info, 'beer_temp', 0.0))
         brewpi_device.latest_control_mode = getattr(remote_brewpi_info, 'control_mode', "u")
         # TODO - Properly handle when we aren't provided gravity data (i.e. no sensor is attached)
-        brewpi_device.latest_gravity = getattr(remote_brewpi_info, 'gravity', "")
+        brewpi_device.latest_gravity = decimal.Decimal(getattr(remote_brewpi_info, 'gravity', 0.0))
 
         # Both save the object to the database, as well as the data to the CSV
         brewpi_device.save()
@@ -122,8 +122,8 @@ def process_incoming_data(request):
             sensor.save()
 
         sensor.name = getattr(remote_gravity_info, 'name', "")
-        sensor.latest_gravity = getattr(remote_gravity_info, 'gravity', "")
-        sensor.latest_temp = getattr(remote_gravity_info, 'temp', "")
+        sensor.latest_gravity = decimal.Decimal(getattr(remote_gravity_info, 'gravity', 0.0))
+        sensor.latest_temp = decimal.Decimal(getattr(remote_gravity_info, 'temp', 0.0))
         sensor.latest_temp_format = getattr(remote_gravity_info, 'temp_format', "")
 
         sensor.save()
