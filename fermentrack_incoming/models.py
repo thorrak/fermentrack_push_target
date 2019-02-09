@@ -60,7 +60,7 @@ class BrewPiDevice(models.Model):
 
     def csv_filename(self) -> str:
         # Return the formatted filename for the CSV file we'll be logging to
-        return self.fermentrack_install.name + " - BrewPi " + self.remote_id + ".csv"
+        return self.fermentrack_install.name + " - BrewPi {}".format(self.remote_id) + ".csv"
 
     def _csv_column_headers(self) -> list:
         # This returns a simple list of the columns in the order they appear in the CSV file
@@ -133,7 +133,7 @@ class GravitySensor(models.Model):
 
     def csv_filename(self) -> str:
         # Return the formatted filename for the CSV file we'll be logging to
-        return self.fermentrack_install.name + " - Gravity " + self.remote_id + ".csv"
+        return self.fermentrack_install.name + " - Gravity {}".format(self.remote_id) + ".csv"
 
     def _csv_column_headers(self) -> list:
         # This returns a simple list of the columns in the order they appear in the CSV file
