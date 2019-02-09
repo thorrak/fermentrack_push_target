@@ -97,7 +97,7 @@ class BrewPiDevice(models.Model):
 
         with open(file_path, 'a') as f:
             writer = csv.writer(f)
-            writer.writerow(self._csv_data)
+            writer.writerow(self._csv_data())
 
 
 class GravitySensor(models.Model):
@@ -167,4 +167,4 @@ class GravitySensor(models.Model):
 
         with open(file_path, 'a') as f:
             writer = csv.writer(f)
-            writer.writerow(self._csv_data)
+            writer.writerow(self._csv_data())
