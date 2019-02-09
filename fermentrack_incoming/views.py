@@ -108,7 +108,7 @@ def process_incoming_data(request):
         brewpi_device.latest_beer_temp = decimal.Decimal(remote_brewpi_info.get('beer_temp', 0.0))
         brewpi_device.latest_control_mode = remote_brewpi_info.get('control_mode', "u")
         # TODO - Properly handle when we aren't provided gravity data (i.e. no sensor is attached)
-        brewpi_device.latest_gravity = decimal.Decimal(remote_brewpi_info.get('gravity', 0.0))
+        # brewpi_device.latest_gravity = decimal.Decimal(remote_brewpi_info.get('gravity', 0.0))
 
         # Both save the object to the database, as well as the data to the CSV
         brewpi_device.save()
