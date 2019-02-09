@@ -130,5 +130,9 @@ def process_incoming_data(request):
         sensor.save()
         sensor.save_latest_to_csv()
 
+    # Update the timestamp for last checkin
+    fermentrack_obj.last_checked_in = timezone.now()
+    fermentrack_obj.save()
+
     return JsonResponse({'status': 'success', 'message': "Data processed successfully"}, safe=False,
                         json_dumps_params={'indent': 4})
