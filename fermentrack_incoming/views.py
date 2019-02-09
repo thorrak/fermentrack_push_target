@@ -126,8 +126,8 @@ def process_incoming_data(request):
             sensor.save()
 
         sensor.name = remote_gravity_info.get('name', "")
-        sensor.latest_gravity = decimal.Decimal(remote_gravity_info.get('gravity', 0.0))
-        sensor.latest_temp = decimal.Decimal(remote_gravity_info.get('temp', 0.0))
+        # sensor.latest_gravity = decimal.Decimal(remote_gravity_info.get('gravity', 0.0))
+        # sensor.latest_temp = decimal.Decimal(remote_gravity_info.get('temp', 0.0))
         sensor.latest_temp_format = remote_gravity_info.get('temp_format', "")
 
         sensor.save()
