@@ -101,14 +101,14 @@ def process_incoming_data(request):
         # There should be some debate as to which of these fields are required, vs which can be defaulted to a value.
         # For testing, I'm defaulting everything, but in an actual implementation there should be a requirement that
         # at least the minimum set of fields required be provided.
-        brewpi_device.name = getattr(remote_brewpi_info, 'name', "")
-        brewpi_device.latest_temp_format = getattr(remote_brewpi_info, 'temp_format', "")
-        brewpi_device.latest_fridge_temp = decimal.Decimal(getattr(remote_brewpi_info, 'fridge_temp', 0.0))
-        brewpi_device.latest_room_temp = decimal.Decimal(getattr(remote_brewpi_info, 'room_temp', 0.0))
-        brewpi_device.latest_beer_temp = decimal.Decimal(getattr(remote_brewpi_info, 'beer_temp', 0.0))
-        brewpi_device.latest_control_mode = getattr(remote_brewpi_info, 'control_mode', "u")
+        brewpi_device.name = remote_brewpi_info.get('name', "")
+        brewpi_device.latest_temp_format = remote_brewpi_info.get('temp_format', "")
+        brewpi_device.latest_fridge_temp = decimal.Decimal(remote_brewpi_info.get('fridge_temp', 0.0))
+        brewpi_device.latest_room_temp = decimal.Decimal(remote_brewpi_info.get('room_temp', 0.0))
+        brewpi_device.latest_beer_temp = decimal.Decimal(remote_brewpi_info.get('beer_temp', 0.0))
+        brewpi_device.latest_control_mode = remote_brewpi_info.get('control_mode', "u")
         # TODO - Properly handle when we aren't provided gravity data (i.e. no sensor is attached)
-        brewpi_device.latest_gravity = decimal.Decimal(getattr(remote_brewpi_info, 'gravity', 0.0))
+        brewpi_device.latest_gravity = decimal.Decimal(remote_brewpi_info.get('gravity', 0.0))
 
         # Both save the object to the database, as well as the data to the CSV
         brewpi_device.save()
@@ -125,10 +125,10 @@ def process_incoming_data(request):
             sensor.sensor_type = remote_gravity_info['sensor_type']
             sensor.save()
 
-        sensor.name = getattr(remote_gravity_info, 'name', "")
-        sensor.latest_gravity = decimal.Decimal(getattr(remote_gravity_info, 'gravity', 0.0))
-        sensor.latest_temp = decimal.Decimal(getattr(remote_gravity_info, 'temp', 0.0))
-        sensor.latest_temp_format = getattr(remote_gravity_info, 'temp_format', "")
+        sensor.name = remote_gravity_info.get('name', "")
+        sensor.latest_gravity = decimal.Decimal(remote_gravity_info.get('gravity', 0.0))
+        sensor.latest_temp = decimal.Decimal(remote_gravity_info.get('temp', 0.0))
+        sensor.latest_temp_format = remote_gravity_info.get('temp_format', "")
 
         sensor.save()
         sensor.save_latest_to_csv()
