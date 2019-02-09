@@ -90,7 +90,11 @@ def process_incoming_data(request):
     # data
 
     # First, parse through the BrewPiDevice objects
+    device_no = 0
     for remote_brewpi_info in incoming_data['brewpi_devices']:
+        with open(os.path.join(settings.BASE_DIR, "log", 'brewpi_device_{}.log'.format(device_no)), 'w') as logFile:
+            pprint.pprint(remote_brewpi_info, logFile)
+
         # Either load (or create) the appropriate "BrewPiDevice" object
         brewpi_device, created = BrewPiDevice.objects.get_or_create(remote_id=remote_brewpi_info['internal_id'],
                                                                     fermentrack_install=fermentrack_obj)
