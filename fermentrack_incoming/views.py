@@ -89,6 +89,11 @@ def process_incoming_data(request):
     # UpstreamFermentrackInstallation object. Let's start iterating through the devices we were sent & actually log the
     # data
 
+    # Log a "raw" version of the incoming data, associated with the specific Fermentrack install
+    with open(os.path.join(settings.BASE_DIR, "data", 'incoming_data_parsed-dev-{}.log'.format(fermentrack_obj.id)), 'w') as logFile:
+        pprint.pprint(incoming_data, logFile)
+
+
     # First, parse through the BrewPiDevice objects
     device_no = 0
     for remote_brewpi_info in incoming_data['brewpi_devices']:
