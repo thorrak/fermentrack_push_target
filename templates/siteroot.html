@@ -21,9 +21,9 @@
                 <li class="list-group-item">
                     <div class="row">
                         <div class="col-sm-12 col-md-8"><i class="fas fa-thermometer-half"></i> BrewPiDevice {{ brewpi_device.name }}</div>
-                        <div class="col-sm-4 col-md-1">{{ brewpi_device.latest_fridge_temp }}&deg; {{ brewpi_device.latest_temp_format }}</div>
-                        <div class="col-sm-4 col-md-1">{{ brewpi_device.latest_gravity }}</div>
-                        <div class="col-sm-4 col-md-2">CSV | Json</div>
+                        <div class="col-sm-4 col-md-1">{{ brewpi_device.latest_fridge_temp|floatformat:1 }}&deg; {{ brewpi_device.latest_temp_format }}</div>
+                        <div class="col-sm-4 col-md-1">{{ brewpi_device.latest_gravity|floatformat:3 }}</div>
+                        <div class="col-sm-4 col-md-2"><a href="/data/{{ brewpi_device.csv_filename|urlencode }}">CSV</a></div>
                     </div>
                 </li>
                 <!-- End BrewPiDevice Line -->
@@ -34,9 +34,9 @@
                 <li class="list-group-item">
                     <div class="row">
                         <div class="col-sm-12 col-md-8"><i class="fas fa-wine-glass-alt"></i> GravitySensor {{ gravity_sensor.name }}</div>
-                        <div class="col-sm-4 col-md-1">{{ gravity_sensor.latest_temp }}&deg; {{ gravity_sensor.latest_temp_format }}</div>
-                        <div class="col-sm-4 col-md-1">{{ gravity_sensor.latest_gravity }}</div>
-                        <div class="col-sm-4 col-md-2">CSV | Json</div>
+                        <div class="col-sm-4 col-md-1">{{ gravity_sensor.latest_temp|floatformat:1 }}&deg; {{ gravity_sensor.latest_temp_format }}</div>
+                        <div class="col-sm-4 col-md-1">{{ gravity_sensor.latest_gravity|floatformat:3 }}</div>
+                        <div class="col-sm-4 col-md-2"><a href="/data/{{ gravity_sensor.csv_filename|urlencode }}">CSV</a></div>
                     </div>
                 </li>
                 <!-- End GravitySensor Line -->

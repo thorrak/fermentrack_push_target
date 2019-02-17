@@ -3,3 +3,4 @@
 
 Django>=1.11,<1.12
 pytz
+raven           # OPTIONAL - used for debugging

@@ -41,6 +41,16 @@ INSTALLED_APPS = [
     'fermentrack_incoming.apps.FermentrackIncomingConfig',
 ]
 
+try:
+    import raven
+    INSTALLED_APPS += 'raven.contrib.django.raven_compat',
+    RAVEN_CONFIG = {
+        'dsn': 'http://7c0340c16f2d4cde9b5d98e0fb81b6fd:61cc25bada6e49f6ac7a4874496047f0@sentry.optictheory.com:9000/8',
+        'release': raven.fetch_git_sha(os.path.abspath(BASE_DIR)),
+    }
+except:
+    pass
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

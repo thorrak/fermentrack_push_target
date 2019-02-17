@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from . import forms
 
-import json, datetime, pytz, os, logging, pprint
+import json, datetime, pytz, os, logging, pprint, decimal
 
 from fermentrack_incoming.models import UpstreamFermentrackInstallation, BrewPiDevice, GravitySensor
 import fermentrack_push_target.settings as settings
@@ -89,7 +89,13 @@ def process_incoming_data(request):
     # UpstreamFermentrackInstallation object. Let's start iterating through the devices we were sent & actually log the
     # data
 
+    # Log a "raw" version of the incoming data, associated with the specific Fermentrack install
+    with open(os.path.join(settings.BASE_DIR, "data", 'incoming_data_parsed-dev-{}.log'.format(fermentrack_obj.id)), 'w') as logFile:
+        pprint.pprint(incoming_data, logFile)
+
+
     # First, parse through the BrewPiDevice objects
+    device_no = 0
     for remote_brewpi_info in incoming_data['brewpi_devices']:
         # Either load (or create) the appropriate "BrewPiDevice" object
         brewpi_device, created = BrewPiDevice.objects.get_or_create(remote_id=remote_brewpi_info['internal_id'],
@@ -97,14 +103,24 @@ def process_incoming_data(request):
         # There should be some debate as to which of these fields are required, vs which can be defaulted to a value.
         # For testing, I'm defaulting everything, but in an actual implementation there should be a requirement that
         # at least the minimum set of fields required be provided.
-        brewpi_device.name = getattr(remote_brewpi_info, 'name', "")
-        brewpi_device.latest_temp_format = getattr(remote_brewpi_info, 'temp_format', "")
-        brewpi_device.latest_fridge_temp = getattr(remote_brewpi_info, 'fridge_temp', 0)
-        brewpi_device.latest_room_temp = getattr(remote_brewpi_info, 'room_temp', 0)
-        brewpi_device.latest_beer_temp = getattr(remote_brewpi_info, 'beer_temp', 0)
-        brewpi_device.latest_control_mode = getattr(remote_brewpi_info, 'control_mode', "u")
-        # TODO - Properly handle when we aren't provided gravity data (i.e. no sensor is attached)
-        brewpi_device.latest_gravity = getattr(remote_brewpi_info, 'gravity', "")
+        brewpi_device.name = remote_brewpi_info.get('name', "")
+        brewpi_device.latest_temp_format = remote_brewpi_info.get('temp_format', "")
+        brewpi_device.latest_control_mode = remote_brewpi_info.get('control_mode', "u")
+
+        # If a sensor isn't present/assigned, fridge temp/beer temp/room temp/latest gravity can be None
+        brewpi_device.latest_fridge_temp = None
+        brewpi_device.latest_room_temp = None
+        brewpi_device.latest_beer_temp = None
+        brewpi_device.latest_gravity = None
+
+        if 'fridge_temp' in remote_brewpi_info:
+            brewpi_device.latest_fridge_temp = decimal.Decimal(remote_brewpi_info['fridge_temp'])
+        if 'room_temp' in remote_brewpi_info:
+            brewpi_device.latest_room_temp = decimal.Decimal(remote_brewpi_info['room_temp'])
+        if 'beer_temp' in remote_brewpi_info:
+            brewpi_device.latest_beer_temp = decimal.Decimal(remote_brewpi_info['beer_temp'])
+        if 'gravity' in remote_brewpi_info:
+            brewpi_device.latest_gravity = decimal.Decimal(remote_brewpi_info['gravity'])
 
         # Both save the object to the database, as well as the data to the CSV
         brewpi_device.save()
@@ -121,13 +137,21 @@ def process_incoming_data(request):
             sensor.sensor_type = remote_gravity_info['sensor_type']
             sensor.save()
 
-        sensor.name = getattr(remote_gravity_info, 'name', "")
-        sensor.latest_gravity = getattr(remote_gravity_info, 'gravity', "")
-        sensor.latest_temp = getattr(remote_gravity_info, 'temp', "")
-        sensor.latest_temp_format = getattr(remote_gravity_info, 'temp_format', "")
+        sensor.name = remote_gravity_info.get('name', "")
+
+        if 'gravity' in remote_gravity_info:
+            sensor.latest_gravity = decimal.Decimal(remote_gravity_info['gravity'])
+        if 'temp' in remote_gravity_info:
+            sensor.latest_temp = decimal.Decimal(remote_gravity_info['temp'])
+        if 'temp_format' in remote_gravity_info:
+            sensor.latest_temp_format = remote_gravity_info['temp_format']
 
         sensor.save()
         sensor.save_latest_to_csv()
+
+    # Update the timestamp for last checkin
+    fermentrack_obj.last_checked_in = timezone.now()
+    fermentrack_obj.save()
 
     return JsonResponse({'status': 'success', 'message': "Data processed successfully"}, safe=False,
                         json_dumps_params={'indent': 4})
